@@ -1,336 +1,224 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang='fr'>
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>BVSBY & VINNY — Cachets Officiels</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<meta charset='UTF-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0'>
+<title>BVSBY Secure Seal</title>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js'></script>
+<script src='https://unpkg.com/html5-qrcode'></script>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap');
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-:root{
-  --bg:#0c0c0c;--surface:#141414;--surface2:#1c1c1c;
-  --border:#242424;--border2:#2e2e2e;
-  --text:#f0ebe3;--muted:#555;--mid:#888;
-  --gold:#c9a96e;--gold2:#e8c98a;
-  --green:#4ade80;--red:#f87171;--r:6px;
-}
-html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:'DM Mono',monospace;}
-.tabs-bar{display:flex;background:var(--surface);border-bottom:1px solid var(--border);padding:0 24px;}
-.tab{padding:16px 20px;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);cursor:pointer;border:none;background:none;font-family:'DM Mono',monospace;border-bottom:2px solid transparent;transition:all 0.15s;}
-.tab:hover{color:var(--mid);}
-.tab.active{color:var(--gold);border-bottom-color:var(--gold);}
-.tab-panel{display:none;padding:32px 24px;max-width:960px;margin:0 auto;}
-.tab-panel.active{display:block;}
-.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
-.form-grid.cols3{grid-template-columns:1fr 1fr 1fr;}
-.form-grid.cols1{grid-template-columns:1fr;}
-.field{display:flex;flex-direction:column;gap:6px;}
-label{font-size:10px;letter-spacing:0.8px;text-transform:uppercase;color:var(--mid);}
-input,select,textarea{background:var(--surface2);border:1px solid var(--border2);color:var(--text);font-family:'DM Mono',monospace;font-size:12px;padding:9px 12px;border-radius:var(--r);outline:none;width:100%;transition:border-color 0.15s;}
-input:focus,select:focus,textarea:focus{border-color:var(--gold);}
-select option{background:var(--surface2);}
-.sec-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;margin-bottom:6px;}
-.sec-sub{font-size:12px;color:var(--muted);margin-bottom:28px;line-height:1.6;}
-.btn{font-family:'DM Mono',monospace;font-size:11px;cursor:pointer;padding:10px 20px;border-radius:var(--r);border:1px solid var(--border2);background:none;color:var(--mid);transition:all 0.15s;letter-spacing:0.5px;}
-.btn:hover{border-color:var(--text);color:var(--text);background:var(--surface2);}
-.btn-gold{background:var(--gold);color:#0c0c0c;border-color:var(--gold);font-weight:500;}
-.btn-gold:hover{background:var(--gold2);border-color:var(--gold2);}
-.preview-zone{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:32px;display:flex;flex-direction:column;align-items:center;gap:24px;margin-top:24px;}
-.preview-label{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);}
-#stamp-container{display:flex;gap:32px;align-items:flex-start;flex-wrap:wrap;justify-content:center;}
-.stamp{position:relative;width:220px;height:220px;flex-shrink:0;}
-.stamp-ring-outer{position:absolute;inset:0;border-radius:50%;border:3px solid #b8935a;box-shadow:0 0 0 1px rgba(184,147,90,0.3),inset 0 0 0 1px rgba(184,147,90,0.2);}
-.stamp-ring-inner{position:absolute;inset:10px;border-radius:50%;border:1.5px dashed rgba(184,147,90,0.35);}
-.stamp-bg{position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 40% 35%,#1e1a0e,#0a0905);}
-.stamp-logo{position:absolute;top:50%;left:50%;transform:translate(-50%,-60%);text-align:center;}
-.stamp-bv{font-family:'Syne',sans-serif;font-size:44px;font-weight:800;color:#c9a96e;letter-spacing:-1.5px;line-height:1;text-shadow:0 2px 12px rgba(201,169,110,0.3);}
-.stamp-type{font-size:7.5px;letter-spacing:2.5px;text-transform:uppercase;color:rgba(201,169,110,0.65);margin-top:2px;}
-.stamp-qr{position:absolute;bottom:34px;left:50%;transform:translateX(-50%);}
-.stamp-qr canvas,.stamp-qr img{width:50px!important;height:50px!important;border-radius:2px;filter:invert(1) sepia(1) saturate(1.5) hue-rotate(5deg);opacity:0.8;}
-.stamp-info{background:var(--surface2);border:1px solid var(--border2);border-radius:var(--r);padding:18px;min-width:240px;max-width:280px;flex:1;}
-.stamp-info-title{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border);}
-.info-row{display:flex;flex-direction:column;gap:2px;padding:7px 0;border-bottom:1px solid var(--border);}
-.info-row:last-child{border-bottom:none;}
-.info-key{font-size:9px;letter-spacing:0.5px;text-transform:uppercase;color:var(--muted);}
-.info-val{font-size:12px;color:var(--text);word-break:break-word;}
-.info-val.gold{color:var(--gold);font-weight:500;}
-.info-val.big{font-size:13px;font-weight:500;}
-.stamp-hash{font-size:9px;color:var(--muted);text-align:center;margin-top:4px;letter-spacing:0.5px;}
-.actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;}
-.scanner-zone{background:var(--surface);border:1px dashed var(--border2);border-radius:var(--r);padding:32px 24px;display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center;}
-.scan-textarea{width:100%;background:var(--surface2);border:1px solid var(--border2);color:var(--text);font-family:'DM Mono',monospace;font-size:12px;padding:12px;border-radius:var(--r);outline:none;resize:vertical;min-height:120px;line-height:1.6;transition:border-color 0.15s;}
-.scan-textarea:focus{border-color:var(--gold);}
-.scan-result{margin-top:20px;border-radius:var(--r);padding:20px;font-size:12px;line-height:1.8;display:none;}
-.scan-result.ok{background:rgba(74,222,128,0.06);border:1px solid rgba(74,222,128,0.2);}
-.scan-result.err{background:rgba(248,113,113,0.06);border:1px solid rgba(248,113,113,0.2);color:var(--red);}
-.scan-ok-title{color:var(--green);font-weight:600;font-size:13px;margin-bottom:14px;}
-.scan-data-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px;}
-.scan-data-item{background:var(--surface);padding:10px 12px;border-radius:var(--r);}
-.scan-data-key{font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:3px;}
-.scan-data-val{font-size:12px;color:var(--text);}
-.scan-data-val.gold{color:var(--gold);}
-.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--surface2);border:1px solid var(--border2);color:var(--text);padding:10px 20px;font-family:'DM Mono',monospace;font-size:12px;border-radius:var(--r);z-index:999;pointer-events:none;transition:transform 0.3s;white-space:nowrap;}
-.toast.show{transform:translateX(-50%) translateY(0);}
-.toast.ok{border-color:var(--green);color:var(--green);}
-.toast.err{border-color:var(--red);color:var(--red);}
-@media(max-width:640px){
-  .tab-panel{padding:20px 16px;}
-  .form-grid,.form-grid.cols3{grid-template-columns:1fr;}
-  #stamp-container{flex-direction:column;align-items:center;}
-  .stamp-info{min-width:unset;width:100%;max-width:100%;}
-  .scan-data-grid{grid-template-columns:1fr;}
-}
+body{background:#0b0b0d;color:#fff;font-family:Arial;padding:20px}
+.wrap{display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:1200px;margin:auto}
+.card{background:#15151b;padding:25px;border-radius:20px;border:1px solid #2b2b35}
+input,select,textarea{width:100%;padding:12px;background:#1f1f27;border:1px solid #333;color:#fff;border-radius:10px;margin-top:6px}
+button{padding:12px 16px;border:none;border-radius:10px;cursor:pointer;margin-top:10px}
+.primary{background:#d4b06a;color:#111}
+#seal{position:relative;width:260px;height:260px;margin:auto}
+.r1{position:absolute;inset:0;border:4px solid #d4b06a;border-radius:50%}
+.r2{position:absolute;inset:12px;border:2px dashed rgba(212,176,106,.5);border-radius:50%}
+.logo{position:absolute;top:50%;left:50%;transform:translate(-50%,-60%);text-align:center}
+.logo h1{font-size:54px;color:#d4b06a;margin:0}
+.logo p{font-size:10px;letter-spacing:3px}
+#qr{position:absolute;bottom:38px;left:50%;transform:translateX(-50%)}
+#reader{margin-top:20px}
+#result{margin-top:20px;padding:16px;border-radius:12px;display:none}
+.ok{background:rgba(0,255,120,.08);border:1px solid rgba(0,255,120,.2)}
+.err{background:rgba(255,0,0,.08);border:1px solid rgba(255,0,0,.2)}
+@media(max-width:900px){.wrap{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
-<div style="background:var(--surface);border-bottom:1px solid var(--border);padding:14px 24px;display:flex;align-items:center;gap:12px;">
-  <span style="font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--gold)">B.V</span>
-  <span style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted)">Générateur de Cachets Officiels</span>
-</div>
-<div class="tabs-bar">
-  <button class="tab active" onclick="switchTab('generate',this)">⬡ Générer un cachet</button>
-  <button class="tab" onclick="switchTab('scan',this)">⌖ Scanner / Vérifier</button>
-</div>
-
-<!-- TAB GÉNÉRER -->
-<div class="tab-panel active" id="tab-generate">
-  <div class="sec-title">Nouveau cachet officiel</div>
-  <div class="sec-sub">Renseignez les informations du document — un cachet compact style tampon avec QR code sécurisé sera généré, prêt à être apposé sur la signature du document.</div>
-  <div class="form-grid cols3">
-    <div class="field"><label>Type de document *</label>
-      <select id="f-type" onchange="autoRef()">
-        <option value="">Choisir...</option>
-        <option value="DEVIS">Devis</option>
-        <option value="CONTRAT">Contrat</option>
-        <option value="FACTURE">Facture</option>
-        <option value="ACOMPTE">Acompte</option>
-        <option value="SOLDE">Solde</option>
-        <option value="MAINTENANCE">Maintenance</option>
-        <option value="BON DE COMMANDE">Bon de commande</option>
-      </select>
-    </div>
-    <div class="field"><label>Référence *</label><input id="f-ref" placeholder="BV-2026-001"/></div>
-    <div class="field"><label>Date *</label><input type="date" id="f-date"/></div>
-  </div>
-  <div class="form-grid">
-    <div class="field"><label>Nom du client *</label><input id="f-client" placeholder="Nom / Raison sociale"/></div>
-    <div class="field"><label>Contact client</label><input id="f-contact" placeholder="email ou téléphone"/></div>
-  </div>
-  <div class="form-grid cols3">
-    <div class="field"><label>Montant HT (€)</label><input type="number" id="f-montant" placeholder="500"/></div>
-    <div class="field"><label>Statut paiement</label>
-      <select id="f-statut">
-        <option value="">—</option>
-        <option value="EN ATTENTE">En attente</option>
-        <option value="ACOMPTE REÇU">Acompte reçu</option>
-        <option value="PAYÉ">Payé intégralement</option>
-        <option value="EN RETARD">En retard</option>
-      </select>
-    </div>
-    <div class="field"><label>Échéance</label><input type="date" id="f-echeance"/></div>
-  </div>
-  <div class="form-grid cols1" style="margin-bottom:0">
-    <div class="field"><label>Description de la prestation</label><input id="f-desc" placeholder="Création site web vitrine 5 pages..."/></div>
-  </div>
-  <div style="display:flex;gap:10px;margin-top:20px;">
-    <button class="btn btn-gold" style="flex:1;padding:12px;" onclick="generateStamp()">⬡ Générer le cachet</button>
-    <button class="btn" onclick="resetForm()">Réinitialiser</button>
-  </div>
-  <div class="preview-zone" id="preview-zone" style="display:none;">
-    <div class="preview-label">Cachet officiel — à apposer sur la zone de signature</div>
-    <div id="stamp-container"></div>
-    <div class="stamp-hash" id="stamp-hash"></div>
-    <div class="actions" id="stamp-actions"></div>
-  </div>
+<div class='wrap'>
+<div class='card'>
+<h2>BVSBY Secure Seal</h2>
+<p>Cachet intelligent avec QR sécurisé, PNG transparent, PDF et scanner intégré.</p>
+<label>Type</label>
+<select id='type'>
+<option>FACTURE</option>
+<option>DEVIS</option>
+<option>CONTRAT</option>
+</select>
+<label>Référence</label>
+<input id='ref' placeholder='BV-2026-001'>
+<label>Client</label>
+<input id='client'>
+<label>Montant</label>
+<input id='amount'>
+<label>Description</label>
+<textarea id='desc'></textarea>
+<button class='primary' onclick='generateSeal()'>Générer</button>
+<button onclick='downloadPNG()'>PNG transparent</button>
+<button onclick='downloadPDF()'>PDF</button>
+<div id='history'></div>
 </div>
 
-<!-- TAB SCANNER -->
-<div class="tab-panel" id="tab-scan">
-  <div class="sec-title">Vérifier un cachet</div>
-  <div class="sec-sub">Scannez le QR code du cachet avec votre téléphone — copiez le texte obtenu ici pour vérifier l'authenticité et afficher toutes les informations d'origine.</div>
-  <div class="scanner-zone">
-    <div style="font-size:32px;opacity:0.3">⌖</div>
-    <div style="font-size:12px;color:var(--muted);max-width:420px;">Scannez le QR code du cachet avec l'appareil photo ou une app de scan, puis copiez-collez le texte obtenu ci-dessous.</div>
-    <textarea class="scan-textarea" id="scan-input" placeholder="Collez ici le contenu du QR code scanné..."></textarea>
-    <button class="btn btn-gold" style="padding:11px 32px;" onclick="verifyScan()">⌖ Vérifier l'authenticité</button>
-  </div>
-  <div class="scan-result" id="scan-result"></div>
+<div class='card'>
+<div id='seal'>
+<div class='r1'></div>
+<div class='r2'></div>
+<div class='logo'>
+<h1>B.V</h1>
+<p id='typed'>FACTURE</p>
+</div>
+<div id='qr'></div>
 </div>
 
-<div class="toast" id="toast"></div>
+<div id='hash'></div>
+<button class='primary' onclick='startScanner()'>Scanner QR</button>
+<div id='reader'></div>
+<div id='result'></div>
+</div>
+</div>
 
 <script>
-document.getElementById('f-date').value = new Date().toISOString().slice(0,10);
-const d2 = new Date(); d2.setDate(d2.getDate()+15);
-document.getElementById('f-echeance').value = d2.toISOString().slice(0,10);
-let refCounter = 1;
+const SECRET='BVSBY_2026';
 
-function switchTab(id,el){
-  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  document.getElementById('tab-'+id).classList.add('active');
-  el.classList.add('active');
+async function sha256(message){
+const msgBuffer = new TextEncoder().encode(message);
+const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+const hashArray = Array.from(new Uint8Array(hashBuffer));
+return hashArray.map(b => b.toString(16).padStart(2,'0')).join('');
 }
 
-function autoRef(){
-  const map={DEVIS:'BV-D',CONTRAT:'BV-C',FACTURE:'BV-F',ACOMPTE:'BV-FA',SOLDE:'BV-FS',MAINTENANCE:'BV-FM','BON DE COMMANDE':'BV-BC'};
-  const pre=map[document.getElementById('f-type').value]||'BV';
-  document.getElementById('f-ref').value=`${pre}-${new Date().getFullYear()}-${String(refCounter).padStart(3,'0')}`;
+async function generateSeal(){
+const data={
+type:type.value,
+ref:ref.value || ('BV-'+Date.now()),
+client:client.value,
+amount:amount.value,
+desc:desc.value,
+timestamp:new Date().toISOString()
+};
+
+const payload=JSON.stringify(data);
+const signature=await sha256(payload+SECRET);
+
+const qrData=JSON.stringify({id:data.ref,sig:signature});
+
+localStorage.setItem(data.ref,JSON.stringify({...data,signature}));
+
+typed.innerText=data.type;
+
+qr.innerHTML='';
+
+new QRCode(qr,{
+text:qrData,
+width:70,
+height:70,
+colorDark:'#d4b06a',
+colorLight:'#0000'
+});
+
+hash.innerHTML='<br><small>SHA-256 : '+signature+'</small>';
+
+loadHistory();
 }
 
-function makeHash(str){
-  let h=2166136261;
-  for(let i=0;i<str.length;i++){h^=str.charCodeAt(i);h=(h*16777619)>>>0;}
-  return 'BV'+h.toString(16).toUpperCase().padStart(8,'0');
+async function downloadPNG(){
+const canvas=await html2canvas(document.getElementById('seal'),{
+backgroundColor:null,
+scale:4,
+removeContainer:true,
+allowTaint:true
+});
+
+const link=document.createElement('a');
+link.download='BVSBY_SEAL.png';
+link.href=canvas.toDataURL();
+link.click();
 }
 
-function fmtDate(d){
-  if(!d)return'';
-  const[y,m,day]=d.split('-');return`${day}/${m}/${y}`;
+async function downloadPDF(){
+const canvas=await html2canvas(document.getElementById('seal'),{
+backgroundColor:null,
+scale:4
+});
+
+const img=canvas.toDataURL('image/png');
+const { jsPDF } = window.jspdf;
+const pdf=new jsPDF();
+pdf.text('Document certifie BVSBY',20,20);
+pdf.addImage(img,'PNG',60,40,90,90);
+pdf.save('BVSBY.pdf');
 }
 
-function generateStamp(){
-  const type=document.getElementById('f-type').value;
-  const ref=document.getElementById('f-ref').value.trim();
-  const date=document.getElementById('f-date').value;
-  const client=document.getElementById('f-client').value.trim();
-  const contact=document.getElementById('f-contact').value.trim();
-  const montant=document.getElementById('f-montant').value.trim();
-  const statut=document.getElementById('f-statut').value;
-  const echeance=document.getElementById('f-echeance').value;
-  const desc=document.getElementById('f-desc').value.trim();
-  if(!type||!ref||!date||!client){showToast('✕ Type, référence, date et client obligatoires','err');return;}
-  refCounter++;
-  const payload={
-    EMETTEUR:'BVSBY & VINNY ASSOCIATES SAS',
-    TYPE:type,REF:ref,DATE:fmtDate(date),CLIENT:client,
-    ...(contact&&{CONTACT:contact}),
-    ...(montant&&{MONTANT:parseFloat(montant).toLocaleString('fr-FR')+' EUR'}),
-    ...(statut&&{STATUT:statut}),
-    ...(echeance&&{ECHEANCE:fmtDate(echeance)}),
-    ...(desc&&{PRESTATION:desc}),
-    EMIS_LE:new Date().toLocaleString('fr-FR'),
-    VILLE:'Lille, France',
-  };
-  const qrBody=Object.entries(payload).map(([k,v])=>`${k}:${v}`).join('|');
-  const hash=makeHash(qrBody);
-  const qrFull=qrBody+'|HASH:'+hash;
-  const infoRows=Object.entries(payload).filter(([k])=>['TYPE','REF','DATE','CLIENT','MONTANT','STATUT','ECHEANCE','PRESTATION','EMIS_LE'].includes(k));
+function loadHistory(){
+history.innerHTML='<h3>Historique</h3>';
 
-  document.getElementById('stamp-container').innerHTML=`
-    <div class="stamp" id="the-stamp">
-      <div class="stamp-bg"></div>
-      <div class="stamp-ring-outer"></div>
-      <div class="stamp-ring-inner"></div>
-      <svg style="position:absolute;inset:0;width:100%;height:100%;overflow:visible" viewBox="0 0 220 220">
-        <path id="arcT" d="M 28,110 A 82,82 0 1,1 192,110" fill="none"/>
-        <text font-size="7.5" letter-spacing="2.5" fill="rgba(201,169,110,0.85)" font-family="DM Mono,monospace" font-weight="500">
-          <textPath href="#arcT" startOffset="4%">BVSBY &amp; VINNY ASSOCIATES SAS</textPath>
-        </text>
-        <path id="arcB" d="M 30,114 A 80,80 0 0,0 190,114" fill="none"/>
-        <text font-size="7" letter-spacing="2" fill="rgba(201,169,110,0.5)" font-family="DM Mono,monospace">
-          <textPath href="#arcB" startOffset="12%">LILLE · FRANCE · ${new Date().getFullYear()}</textPath>
-        </text>
-      </svg>
-      <div class="stamp-logo">
-        <div class="stamp-bv">B.V</div>
-        <div class="stamp-type">${type}</div>
-      </div>
-      <div class="stamp-qr" id="qr-in-stamp"></div>
-      <div style="position:absolute;top:50px;left:50%;transform:translateX(-50%);font-size:6px;color:rgba(201,169,110,0.4)">✦</div>
-    </div>
-    <div class="stamp-info">
-      <div class="stamp-info-title">Informations enregistrées</div>
-      ${infoRows.map(([k,v])=>`<div class="info-row"><span class="info-key">${k.replace(/_/g,' ')}</span><span class="info-val ${k==='TYPE'||k==='REF'?'gold':k==='MONTANT'?'big':''}">${v}</span></div>`).join('')}
-      <div class="info-row"><span class="info-key">Empreinte</span><span class="info-val" style="font-size:10px;color:var(--muted)">${hash}</span></div>
-    </div>
-  `;
-
-  const qrEl=document.getElementById('qr-in-stamp');
-  qrEl.innerHTML='';
-  new QRCode(qrEl,{text:qrFull,width:50,height:50,colorDark:'#c9a96e',colorLight:'#00000000',correctLevel:QRCode.CorrectLevel.M});
-
-  document.getElementById('stamp-hash').textContent='🔐 Empreinte : '+hash;
-  document.getElementById('preview-zone').style.display='flex';
-  document.getElementById('stamp-actions').innerHTML=`
-    <button class="btn btn-gold" onclick="downloadPNG()">⬇ Télécharger PNG</button>
-    <button class="btn" onclick="copyQR('${qrFull.replace(/'/g,"\\'")}')">⎘ Copier données QR</button>
-  `;
-  window._qrFull=qrFull;
-  document.getElementById('preview-zone').scrollIntoView({behavior:'smooth',block:'nearest'});
-  showToast('✓ Cachet généré','ok');
+Object.keys(localStorage).forEach(k=>{
+try{
+const d=JSON.parse(localStorage.getItem(k));
+if(d.ref){
+history.innerHTML+=`<div style="padding:10px;border:1px solid #333;border-radius:10px;margin-top:10px">
+<b>${d.ref}</b><br>
+<small>${d.client||''}</small>
+</div>`;
+}
+}catch(e){}
+});
 }
 
-function downloadPNG(){
-  const el=document.getElementById('the-stamp');
-  if(!el){showToast('✕ Aucun cachet','err');return;}
-  const load=()=>{
-    showToast('⏳ Export en cours...','ok');
-    html2canvas(el,{scale:4,backgroundColor:null,useCORS:true,logging:false}).then(c=>{
-      const a=document.createElement('a');
-      a.download='Cachet_BV_'+document.getElementById('f-ref').value.replace(/[^a-zA-Z0-9]/g,'-')+'.png';
-      a.href=c.toDataURL('image/png');a.click();
-      showToast('✓ PNG téléchargé','ok');
-    }).catch(()=>showToast('✕ Erreur export','err'));
-  };
-  if(!window.html2canvas){
-    const s=document.createElement('script');
-    s.src='https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
-    s.onload=load;document.head.appendChild(s);
-  } else load();
+function startScanner(){
+const scanner = new Html5Qrcode('reader');
+
+scanner.start(
+{ facingMode: 'environment' },
+{ fps:10, qrbox:250 },
+(txt)=>{
+verifyQR(txt);
+scanner.stop();
+},
+()=>{}
+);
 }
 
-function copyQR(text){
-  navigator.clipboard.writeText(text).then(()=>showToast('✓ Données copiées','ok')).catch(()=>showToast('✕ Impossible de copier','err'));
+async function verifyQR(raw){
+try{
+const qrData=JSON.parse(raw);
+const stored=JSON.parse(localStorage.getItem(qrData.id));
+
+if(!stored){
+result.className='err';
+result.style.display='block';
+result.innerHTML='Document introuvable';
+return;
 }
 
-function resetForm(){
-  ['f-type','f-ref','f-client','f-contact','f-montant','f-statut','f-desc'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('f-date').value=new Date().toISOString().slice(0,10);
-  document.getElementById('preview-zone').style.display='none';
+const payload=JSON.stringify({
+type:stored.type,
+ref:stored.ref,
+client:stored.client,
+amount:stored.amount,
+desc:stored.desc,
+timestamp:stored.timestamp
+});
+
+const sign=await sha256(payload+SECRET);
+
+if(sign===qrData.sig){
+result.className='ok';
+result.style.display='block';
+result.innerHTML=`
+<h3>✓ Authentique</h3>
+<p><b>Ref :</b> ${stored.ref}</p>
+<p><b>Client :</b> ${stored.client}</p>
+<p><b>Montant :</b> ${stored.amount}</p>
+`;
+}else{
+result.className='err';
+result.style.display='block';
+result.innerHTML='Signature invalide';
+}
+}catch(e){
+result.className='err';
+result.style.display='block';
+result.innerHTML='QR invalide';
+}
 }
 
-function verifyScan(){
-  const raw=document.getElementById('scan-input').value.trim();
-  const res=document.getElementById('scan-result');
-  if(!raw){showToast('✕ Collez le contenu scanné','err');return;}
-  const parts=raw.split('|');
-  const hashPart=parts.find(p=>p.startsWith('HASH:'));
-  if(!hashPart){
-    res.style.display='block';res.className='scan-result err';
-    res.innerHTML='✕ Format non reconnu — ce QR code ne provient pas d\'un cachet BVSBY & VINNY ASSOCIATES.';
-    return;
-  }
-  const scannedHash=hashPart.replace('HASH:','').trim();
-  const body=parts.filter(p=>!p.startsWith('HASH:')).join('|');
-  const recomp=makeHash(body);
-  const data={};
-  body.split('|').forEach(p=>{const i=p.indexOf(':');if(i>0)data[p.slice(0,i).trim()]=p.slice(i+1).trim();});
-  res.style.display='block';
-  if(scannedHash===recomp){
-    const fields=['TYPE','REF','DATE','CLIENT','CONTACT','MONTANT','STATUT','ECHEANCE','PRESTATION','EMIS_LE','VILLE','EMETTEUR'];
-    res.className='scan-result ok';
-    res.innerHTML=`
-      <div class="scan-ok-title">✓ Cachet authentique — document non falsifié</div>
-      <div style="font-size:11px;color:var(--mid);margin-bottom:14px">Toutes les informations correspondent à l'original émis par BVSBY & VINNY ASSOCIATES.</div>
-      <div class="scan-data-grid">
-        ${fields.filter(k=>data[k]).map(k=>`<div class="scan-data-item"><div class="scan-data-key">${k.replace(/_/g,' ')}</div><div class="scan-data-val ${k==='TYPE'||k==='MONTANT'?'gold':''}">${data[k]}</div></div>`).join('')}
-      </div>
-      <div style="margin-top:14px;font-size:10px;color:var(--muted);padding-top:12px;border-top:1px solid var(--border)">Empreinte vérifiée : ${scannedHash}</div>
-    `;
-  } else {
-    res.className='scan-result err';
-    res.innerHTML=`<div style="font-weight:600;font-size:13px;margin-bottom:10px">✕ ALERTE — Document potentiellement falsifié</div>L'empreinte ne correspond pas aux données du QR code. Les informations ont été modifiées après l'émission.<br/><br/><span style="font-size:10px;opacity:0.7">Empreinte scannée : ${scannedHash}<br/>Empreinte attendue : ${recomp}</span>`;
-  }
-}
-
-function showToast(msg,type='ok'){
-  const el=document.getElementById('toast');
-  el.textContent=msg;el.className=`toast ${type}`;
-  setTimeout(()=>el.classList.add('show'),10);
-  setTimeout(()=>el.classList.remove('show'),3000);
-}
+loadHistory();
 </script>
 </body>
 </html>
