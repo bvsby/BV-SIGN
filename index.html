@@ -444,7 +444,7 @@ textarea{resize:vertical;min-height:60px;line-height:1.5;}
 // ══════════════════════════════════════════════════
 //  AUTH
 // ══════════════════════════════════════════════════
-const USERS = { bvsby:'bvvinny2026', mouhamadou:'bvsby2026', vinny:'bvvinny2026' };
+const USERS = { bvsbyvinny:'bvsbyvinny2026', bvsby:'bvsby2026', vinny:'vinny2026' };
 let currentUser = null;
 
 function doLogin(){
@@ -504,10 +504,37 @@ function fmtDate(d){if(!d)return'';const[y,m,day]=d.split('-');return`${day}/${m
 // ══════════════════════════════════════════════════
 const SECRET = 'BVSBY-VINNY-2026-ASSOCIATES-LILLE';
 async function signPayload(str){
-  const enc = new TextEncoder();
-  const key = await crypto.subtle.importKey('raw',enc.encode(SECRET),{name:'HMAC',hash:'SHA-256'},false,['sign']);
-  const sig = await crypto.subtle.sign('HMAC',key,enc.encode(str));
-  return Array.from(new Uint8Array(sig)).slice(0,12).map(b=>b.toString(16).padStart(2,'0')).join('').toUpperCase();
+  try{
+    const enc = new TextEncoder();
+
+    const key = await crypto.subtle.importKey(
+      'raw',
+      enc.encode(SECRET),
+      {
+        name:'HMAC',
+        hash:{name:'SHA-256'}
+      },
+      false,
+      ['sign']
+    );
+
+    const sig = await crypto.subtle.sign(
+      'HMAC',
+      key,
+      enc.encode(str)
+    );
+
+    return Array.from(new Uint8Array(sig))
+      .slice(0,12)
+      .map(b=>b.toString(16).padStart(2,'0'))
+      .join('')
+      .toUpperCase();
+
+  }catch(err){
+    console.error(err);
+    showToast('Erreur crypto : '+err.message,'err');
+    throw err;
+  }
 }
 async function verifyPayload(str, expectedSig){
   const computed = await signPayload(str);
@@ -549,6 +576,10 @@ async function generateStamp(){
   ].join('|');
 
   showToast('⏳ Signature cryptographique...','ok');
+  if(!window.crypto || !window.crypto.subtle){
+  showToast('Crypto API non supportée sur ce navigateur','err');
+  return;
+  }
   const sig = await signPayload(payload);
   const qrText = payload + '|SIG:' + sig;
 
