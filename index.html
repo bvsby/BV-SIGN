@@ -564,15 +564,12 @@ async function generateStamp(){
 
   const ts = new Date().toLocaleString('fr-FR');
   const payload = [
-    `EMETTEUR:BVSBY & VINNY ASSOCIATES SAS`,
-    `TYPE:${type}`,`REF:${ref}`,`DATE:${fmtDate(date)}`,
-    `CLIENT:${client}`,
-    ...(contact?[`CONTACT:${contact}`]:[]),
-    ...(montant?[`MONTANT:${parseFloat(montant).toLocaleString('fr-FR')} EUR`]:[]),
-    ...(statut?[`STATUT:${statut}`]:[]),
-    ...(echeance?[`ECHEANCE:${fmtDate(echeance)}`]:[]),
-    ...(desc?[`PRESTATION:${desc.slice(0,80)}`]:[]),
-    `SIGNATAIRE:${signataire}`,`VILLE:${ville}`,`EMIS_LE:${ts}`,`VERSION:2`
+    `REF:${ref}`,
+    `TYPE:${type}`,
+    `DATE:${fmtDate(date)}`,
+    `CLIENT:${client.slice(0,25)}`,
+    `MONTANT:${montant || 0}`,
+    `TS:${Date.now()}`
   ].join('|');
 
   showToast('⏳ Signature cryptographique...','ok');
@@ -586,6 +583,10 @@ async function generateStamp(){
   // Générer le QR dans le div caché (fond blanc = scannable)
   const qrDiv = document.getElementById('qr-render');
   qrDiv.innerHTML='';
+  if(qrText.length > 1500){
+    showToast('✕ Trop de données pour le QR code','err');
+    return;
+  }
   new QRCode(qrDiv,{
     text:qrText,width:120,height:120,
     colorDark:'#000000',colorLight:'#ffffff',
