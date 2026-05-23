@@ -37,6 +37,19 @@ html,body{min-height:100%;background:var(--bg);color:var(--t1);font-family:'DM M
 .user-chip{font-size:10px;color:var(--t3);padding:4px 10px;border:1px solid var(--b2);border-radius:20px;}
 .tbtn{font-family:'DM Mono',monospace;font-size:10px;cursor:pointer;padding:5px 12px;border-radius:var(--r);border:1px solid var(--b2);background:none;color:var(--t3);transition:all 0.15s;}
 .tbtn:hover{border-color:var(--red);color:var(--red);}
+.btn-dots{font-family:'DM Mono',monospace;font-size:16px;cursor:pointer;padding:4px 10px;border-radius:var(--r);border:1px solid var(--b2);background:none;color:var(--t3);transition:all 0.15s;display:none;line-height:1;}
+.btn-dots:hover{border-color:var(--t2);color:var(--t2);}
+.dots-menu{display:none;position:absolute;top:52px;right:12px;background:var(--s2);border:1px solid var(--b2);border-radius:var(--r);z-index:200;min-width:160px;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,0.4);}
+.dots-menu.open{display:block;}
+.dots-item{width:100%;padding:12px 16px;text-align:left;font-family:'DM Mono',monospace;font-size:12px;color:var(--t1);background:none;border:none;border-bottom:1px solid var(--b1);cursor:pointer;transition:background 0.15s;}
+.dots-item:last-child{border-bottom:none;}
+.dots-item:hover{background:var(--s1);}
+.btn-desktop{display:inline-flex;}
+@media(max-width:640px){
+  .btn-desktop{display:none!important;}
+  .btn-dots{display:block;}
+  .tname{display:none;}
+}
 
 /* TABS */
 .tabs-bar{background:var(--s1);border-bottom:1px solid var(--b1);display:flex;padding:0 24px;overflow-x:auto;flex-shrink:0;}
@@ -166,6 +179,15 @@ select option{background:var(--s2);}
       <span class="tname">Cachets Officiels</span>
     </div>
     <div class="topbar-right">
+      <button class="tbtn btn-desktop" style="color:var(--t3)" onclick="exportJSON()">⬇ Sauvegarder</button>
+      <button class="tbtn btn-desktop" style="color:var(--t3)" onclick="document.getElementById('importJSON').click()">⬆ Importer</button>
+      <input type="file" id="importJSON" accept=".json" style="display:none" onchange="importJSON(event)"/>
+      <!-- Menu 3 points mobile -->
+      <button class="btn-dots" onclick="toggleDotsMenu()" aria-label="Options">⋯</button>
+      <div class="dots-menu" id="dots-menu">
+        <button class="dots-item" onclick="exportJSON();closeDotsMenu()">⬇ Sauvegarder JSON</button>
+        <button class="dots-item" onclick="document.getElementById('importJSON').click();closeDotsMenu()">⬆ Importer JSON</button>
+      </div>
       <span class="user-chip" id="user-chip">—</span>
       <button class="tbtn" onclick="doLogout()">Déconnexion</button>
     </div>
@@ -715,6 +737,55 @@ function clearHistory(){
   localStorage.removeItem('bv_history');
   localStorage.removeItem('bv_stamps_db');
   renderHistory();showToast('Historique vidé','ok');
+}
+
+function toggleDotsMenu(){
+  document.getElementById('dots-menu').classList.toggle('open');
+}
+function closeDotsMenu(){
+  document.getElementById('dots-menu').classList.remove('open');
+}
+document.addEventListener('click',e=>{
+  if(!e.target.closest('.btn-dots')&&!e.target.closest('#dots-menu')) closeDotsMenu();
+});
+
+// ══ EXPORT / IMPORT JSON ══
+function exportJSON(){
+  const db=localStorage.getItem('bv_stamps_db')||'{}';
+  const hist=localStorage.getItem('bv_history')||'[]';
+  const data={
+    exportedAt: new Date().toISOString(),
+    app: 'BVSBY & VINNY ASSOCIATES — Cachets Officiels',
+    stamps_db: JSON.parse(db),
+    history: JSON.parse(hist)
+  };
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  const date=new Date().toISOString().slice(0,10);
+  a.href=URL.createObjectURL(blob);
+  a.download=`BV_Cachets_${date}.json`;
+  a.click();URL.revokeObjectURL(a.href);
+  showToast('✓ Données sauvegardées','ok');
+}
+
+function importJSON(event){
+  const file=event.target.files[0];
+  if(!file) return;
+  if(!file.name.endsWith('.json')){showToast('✕ Fichier JSON requis','err');return;}
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      const data=JSON.parse(e.target.result);
+      if(!data.stamps_db&&!data.history){showToast('✕ Fichier invalide','err');return;}
+      if(data.stamps_db) localStorage.setItem('bv_stamps_db',JSON.stringify(data.stamps_db));
+      if(data.history)   localStorage.setItem('bv_history',JSON.stringify(data.history));
+      renderHistory();
+      const count=data.history?data.history.length:0;
+      showToast(`✓ ${count} cachet(s) importé(s)`,'ok');
+    }catch{showToast('✕ Erreur de lecture du fichier','err');}
+    event.target.value='';
+  };
+  reader.readAsText(file);
 }
 
 // ══ TOAST ══
