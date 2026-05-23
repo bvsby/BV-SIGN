@@ -416,7 +416,7 @@ async function generateStamp(){
     tp.textContent=text;t.appendChild(tp);svg.appendChild(t);
   }
   textPath('arcT','BVSBY & VINNY ASSOCIATES  ·  SAS  ·  LILLE  FRANCE','8','#c9a96e','2','3%');
-  textPath('arcB','CACHET OFFICIEL  ·  DOCUMENT AUTHENTIFIÉ  ·  '+new Date().getFullYear(),'7','rgba(201,169,110,0.65)','1.5','8%');
+  textPath('arcB','CACHET OFFICIEL  ·  DOCUMENT AUTHENTIFIÉ  ·  '+new Date().getFullYear(),'8.5','rgba(201,169,110,0.65)','1.5','8%');
 
   function star(x,y,s){
     const t=document.createElementNS(svgNS,'text');
@@ -435,9 +435,9 @@ async function generateStamp(){
   }
 
   // Logo B·V
-  txt(130,82,'B·V','36','#c9a96e','700','Georgia,serif');
+  txt(130,82,'B·V','42','#c9a96e','700','Georgia,serif');
   // Type document
-  txt(130,100,type,'8','rgba(201,169,110,0.8)','normal','monospace');
+  txt(130,102,type,'12','rgba(201,169,110,0.8)','normal','monospace');
 
   // Ligne séparatrice
   const lineEl=document.createElementNS(svgNS,'line');
@@ -457,7 +457,7 @@ async function generateStamp(){
   // Code sur 2 lignes pour lisibilité
   const codePart1=code.slice(0,9);   // BV-2026
   const codePart2=code.slice(9);     // -XXXXXX → non, mieux : afficher tout sur 1 ligne
-  txt(130,135,code,'9.5','#c9a96e','700','monospace');
+  txt(130,135,code,'13','#c9a96e','700','monospace');
 
   // Ligne sépa bas
   const lineEl2=document.createElementNS(svgNS,'line');
@@ -467,11 +467,11 @@ async function generateStamp(){
   svg.appendChild(lineEl2);
 
   // Ville et date
-  txt(130,165,`${ville.toUpperCase()}  ·  ${fmtDate(date)}`,'7','rgba(201,169,110,0.65)','normal','monospace');
+  txt(130,165,`${ville.toUpperCase()}  ·  ${fmtDate(date)}`,'10','rgba(201,169,110,0.65)','normal','monospace');
 
   // Signataire abrégé
   const sigShort=signataire.split('—')[0].trim().split(' ').map(w=>w[0]).join('').slice(0,4);
-  txt(130,178,'— '+sigShort+' —','7','rgba(201,169,110,0.45)','normal','monospace');
+  txt(130,178,'— '+sigShort+' —','10','rgba(201,169,110,0.45)','normal','monospace');
 
   // Injecter dans la page
   const wrap=document.getElementById('stamp-svg-wrap');
